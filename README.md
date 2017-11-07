@@ -22,7 +22,6 @@ First, set these mandatory environment variables:
 | `HALO_API_KEY`           | CloudPassage Halo API key ID                |
 | `HALO_API_SECRET_KEY`    | Secret corresponding to `HALO_API_KEY`      |
 | `SLACK_API_TOKEN`        | API token for Slack                         |
-| `SLACK_CHANNEL`          | Default channel for Slack notifications     |
 
 Optionally, set these environment variables, if your environment requires them:
 
@@ -30,6 +29,7 @@ Optionally, set these environment variables, if your environment requires them:
 |--------------------------|------------------------------------------------------------------------|
 | `HALO_API_HOST`          | Hostname for Halo API.  Default: `api.cloudpassage.com`                |
 | `SLACK_ROUTING`          | Slack message routing rules.  See below...                             |
+| `SLACK_CHANNEL`          | Default channel for Slack notifications. If unset, defaults to `halo`. |
 | `AWS_ACCOUNT_NUMBERS`    | Account numbers for accounts to enumerate. See below...                |
 | `AWS_ROLE_NAME`          | Role name for enumerating EC2 instances across accounts.  See below... |
 

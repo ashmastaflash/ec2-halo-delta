@@ -11,4 +11,6 @@ COPY app/ /app/
 
 RUN pip install -r /app/requirements-test.txt
 
-CMD ["/usr/bin/python", "-mpy.test", "--cov=halo", "--cov=utility", "--cov=slack", "/app/test"]
+WORKDIR /app/
+
+CMD ["/usr/bin/python", "-mpy.test", "--cov=ehdlib", "--cov-report", "term-missing", "/app/test"]
