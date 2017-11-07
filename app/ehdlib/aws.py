@@ -60,10 +60,14 @@ class AWS(object):
         more_pages = True
         next_token = ""
         if arn:
-            client = boto3.client('ec2', aws_access_key_id=self.api_key,
-                                  aws_secret_access_key=self.api_secret,
-                                  region_name=region_name,
-                                  role_arn=arn)
+            sts_client = boto3.client('sts')
+            creds = sts_client.assume_role(RoleArn=arn,
+                                           RoleSessionName="HaloFootprinter")
+            temp_key = creds["Credentials"]["AccessKeyId"]
+            temp_secret = creds["Credentials"]["SecretAccessKey"]
+            client = boto3.client('ec2', aws_access_key_id=temp_key,
+                                  aws_secret_access_key=temp_secret,
+                                  region_name=region_name)
         else:
             client = boto3.client('ec2', aws_access_key_id=self.api_key,
                                   aws_secret_access_key=self.api_secret,
