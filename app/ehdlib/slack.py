@@ -12,11 +12,19 @@ class Slack(object):
 
     def __init__(self, config):
         """Instantiation only creates the client attribute"""
-        self.token = config["slack_api_token"]
+        self.token = config["api_token"]
         self.botname = "Halo Footprinter"
         self.bot_avatar = "http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png"  # NOQA
         self.client = SlackClient(self.token)
         self.channel = config["default_channel_name"]
+        if "routing_rules" in config:
+            self.routing_rules = config["routing_rules"]
+        else:
+            self.routing_rules = {}
+        if config["api_token"] is not None:
+            self.is_active = True
+        else:
+            self.is_active = False
 
     def send_message(self, message, channel):
         """Send a message to a channel."""
@@ -30,9 +38,10 @@ class Slack(object):
         return
 
     def get_channel_id_reference(self):
-        """INCOMPLETE!  Return a dictionary with channel name key, value id."""
+        """Return a dictionary with key = channel name, value = id."""
         all_channels = self.client.api_call("channels.list")
         all_groups = self.client.api_call("groups.list")
         chan_groups = list(all_channels["channels"])
         chan_groups.extend(all_groups["groups"])
-        return chan_groups
+        retval = {c["name"]: c["id"] for c in chan_groups}
+        return retval

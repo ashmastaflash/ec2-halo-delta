@@ -1,12 +1,15 @@
 #!/usr/bin/env python
-from ehdlib import AWS, Halo, Report, Utility
+from ehdlib import AWS, Halo, Report, Slack, Utility
 
 
 def main():
     # Get application configuration
     aws_config = Utility.get_aws_config()
     halo_config = Utility.get_halo_config()
-    # slack_config = Utility.get_slack_config()
+    slack_config = Utility.get_slack_config()
+
+    # Set up Slack object
+    slack = Slack(slack_config)
 
     # Get a list of all Halo agents with EC2 metadata
     halo_obj = Halo(halo_config)
