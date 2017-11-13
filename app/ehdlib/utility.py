@@ -81,7 +81,9 @@ class Utility(object):
         target_channel = channel_reference[default_channel_name]
         for priority in priorities:
             try:
-                target_channel = channel_reference[routing_rules[priority][instance_metadata[priority]]]  # NOQA
+                instance_meta_match = instance_metadata.items()[0][1][priority]
+                routing_matchers = routing_rules[priority]
+                target_channel = channel_reference[routing_matchers[instance_meta_match]]  # NOQA
                 break
             except KeyError:
                 pass

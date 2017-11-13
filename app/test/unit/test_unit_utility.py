@@ -18,10 +18,16 @@ class TestUnitUtility():
         channel_reference = {"somechannel": "one",
                              "dontpickme": "two",
                              "halo": "whateverchannel"}
-        instance_metadata_1 = {"vpc_id": "abc123",
-                               "instance_id": "098978rtyu"}
-        instance_metadata_2 = {"vpc_id": "abc1234",
-                               "instance_id": "098978rtyu"}
+        instance_metadata_1 = {"instance_1": {"vpc_id": "abc123",
+                                              "aws_account": "098978rtyu",
+                                              "aws_region": "sxsw",
+                                              "key_name": "llaves",
+                                              "instance_id": "098978rtyu"}}
+        instance_metadata_2 = {"instance_2": {"vpc_id": "abc1234",
+                                              "aws_account": "098978rtyu",
+                                              "aws_region": "sxsw",
+                                              "key_name": "llaves",
+                                              "instance_id": "098978rtyu"}}
         routing_rules = {"instance_id": {"somesuch": "nochannelblah"},
                          "vpc_id": {"abc123": "somechannel",
                                     "987cde": "dontpickme"}}

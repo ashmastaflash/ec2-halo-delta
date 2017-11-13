@@ -29,12 +29,18 @@ def main():
             del(instances[instance_id])
 
     # A report is sent to stdout
-    report = Report.create_report(instances)
+    report = Report.create_stdout_report(instances)
     print report
 
-    # A consolidated report is produced and dropped into the main channel
-
-    # If routing rules exist, send individual channel reports as appropriate
+    # Build segmented Slack report, if Slack is active
+    if slack.is_active is True:
+        channel_reference = slack.get_channel_id_reference()
+        reports = report.create_slack_reports(channel_reference,
+                                              slack_config["default_channel_name"],  # NOQA
+                                              slack_config["routing_rules"],
+                                              instances)
+        for channel, message in reports.items():
+            slack.send_message(channel, message)
     return
 
 

@@ -26,7 +26,7 @@ class Slack(object):
         else:
             self.is_active = False
 
-    def send_message(self, message, channel):
+    def send_message(self, channel, message):
         """Send a message to a channel."""
         self.client.api_call("files.upload",
                              initial_comment="Halo Report",
