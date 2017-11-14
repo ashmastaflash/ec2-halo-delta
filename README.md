@@ -121,6 +121,42 @@ arn:aws:iam::67890:role/ec2-instanceinfo
 arn:aws:iam::76543:role/ec2-instanceinfo
 ```
 
+### Running the Tool
+
+* First, build the container:
+
+```
+docker build -t footprinter -f ./Dockerfile .
+```
+
+* Human-readable output:
+
+```
+docker run -it --rm \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e HALO_API_KEY=$HALO_API_KEY \
+    -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
+    -e AWS_ROLE_NAME=$AWS_ROLE_NAME \
+    -e AWS_ACCOUNT_NUMBERS=$AWS_ACCOUNT_NUMBERS \
+    footprinter
+```
+
+* CSV output, saved to a file:
+
+```
+docker run -it --rm \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e HALO_API_KEY=$HALO_API_KEY \
+    -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
+    -e AWS_ROLE_NAME=$AWS_ROLE_NAME \
+    -e AWS_ACCOUNT_NUMBERS=$AWS_ACCOUNT_NUMBERS \
+    -e OUTPUT_FORMAT=csv \
+    footprinter \
+    > ./aws_halo_footprint_delta.csv
+```
+
 ## Implementation Notes
 
 If you use non-root, non-administrative API keys for cross-account access,
@@ -159,7 +195,9 @@ This is an example policy which should be attached to the API keys in the
 ```
 
 This policy needs to be attached to the role named `ec2-instance-info` in
-AWS account `12345` (the `Monitored` account):
+AWS account `12345` (the `Monitored` account) where `halo-footprinter` is
+the name of the account with the API keys you're using and replacing
+`98765` with the account number of the `Administrative` AWS account:
 
 {
   "Version": "2012-10-17",
