@@ -129,7 +129,7 @@ arn:aws:iam::76543:role/ec2-instanceinfo
 docker build -t footprinter -f ./Dockerfile .
 ```
 
-* Human-readable output:
+* Human-readable output, only required environment variables:
 
 ```
 docker run -it --rm \
@@ -137,12 +137,10 @@ docker run -it --rm \
     -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     -e HALO_API_KEY=$HALO_API_KEY \
     -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
-    -e AWS_ROLE_NAME=$AWS_ROLE_NAME \
-    -e AWS_ACCOUNT_NUMBERS=$AWS_ACCOUNT_NUMBERS \
     footprinter
 ```
 
-* CSV output, saved to a file:
+* CSV output, scanning multiple accounts, and saved to a file (notice that `AWS_ROLE_NAME` and `AWS_ACCOUNT_NUMBERS` are both set):
 
 ```
 docker run -it --rm \
