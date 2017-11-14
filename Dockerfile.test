@@ -13,4 +13,4 @@ RUN pip install -r /app/requirements-test.txt
 
 WORKDIR /app/
 
-CMD ["/usr/bin/python", "-mpy.test", "--cov=ehdlib", "--cov-report", "term-missing", "/app/test", "-s"]
+CMD ["/usr/bin/python", "-mpy.test", "--cov=ehdlib", "--cov-report=term-missing", "/app/test", "-s"]

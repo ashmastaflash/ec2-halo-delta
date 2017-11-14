@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 from ehdlib import AWS, Halo, Report, Slack, Utility
 
 
@@ -29,7 +30,10 @@ def main():
             del(instances[instance_id])
 
     # A report is sent to stdout
-    report = Report.create_stdout_report(instances)
+    if os.getenv("OUTPUT_FORMAT", "plaintext") == "csv":
+        report = Report.create_csv_report(instances)
+    else:
+        report = Report.create_stdout_report(instances)
     print report
 
     # Build segmented Slack report, if Slack is active

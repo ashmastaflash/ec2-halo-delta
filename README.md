@@ -32,11 +32,11 @@ Optionally, set these environment variables, if your environment requires them:
 | `SLACK_API_TOKEN`        | API token for Slack                                                    |
 | `AWS_ACCOUNT_NUMBERS`    | Account numbers for accounts to enumerate. See below...                |
 | `AWS_ROLE_NAME`          | Role name for enumerating EC2 instances across accounts.  See below... |
+| `OUTPUT_FORMAT`          | Define alternate output format.  Currently supported: `csv`            |
 
 
 ### SLACK_ROUTING setting
 
-A few words about Slack message routing:
 The optional environment variable, `SLACK_ROUTING`, below, allows you to route
 Slack notifications to specific channels, based on EC2 instance metadata.  The
 metadata items you can use for routing are AWS account number, VPC ID, AWS
@@ -120,3 +120,57 @@ arn:aws:iam::12345:role/ec2-instanceinfo
 arn:aws:iam::67890:role/ec2-instanceinfo
 arn:aws:iam::76543:role/ec2-instanceinfo
 ```
+
+## Implementation Notes
+
+If you use non-root, non-administrative API keys for cross-account access,
+you will need to set up the IAM account (the one attached to the API keys you
+use for this tool) to use STS to assume the role in the other monitored
+accounts.  
+
+In this example scenario, we call the account containing the IAM user (in this
+example, called `halo-footprinter`) that will access other accounts for the
+purpose of gathering an inventory of EC2 instances, the `Administrative` account.  
+The account that contains a role named `ec2-instance-info` that the
+`Administrative` account will assume for the purposes of inventory collection,
+is called `Monitored`.  The `Administrative` account has AWS account number
+`98765`.  The `Monitored` account has AWS account number `12345`
+
+This is an example policy which should be attached to the API keys in the
+`Administrative` account:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1510597306000",
+            "Effect": "Allow",
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::12345:role/ec2-instance-info"
+            ]
+        }
+    ]
+}
+
+```
+
+This policy needs to be attached to the role named `ec2-instance-info` in
+AWS account `12345` (the `Monitored` account):
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::98765:user/halo-footprinter"
+      },
+      "Action": "sts:AssumeRole",
+      "Condition": {}
+    }
+  ]
+}

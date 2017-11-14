@@ -7,6 +7,12 @@ class AWS(object):
     Dict requires the following keys: ``api_key``, ``api_secret``.
 
     Optionally, the dict may have keys for ``accounts``, and ``role_name``.
+    The value for ``accounts`` should be a list of strings where each string
+    is an AWS account number. Each account number referenced in ``accounts``
+    must contain a role with name matching ``role_name``. Each account in
+    ``accounts`` is used with ``role_name`` to build an ARN for the role
+    this tool will assume to inventory each account it has access to, via the
+    ``api_key`` and ``api_secret``.
     """
     def __init__(self, config):
         self.api_key = config["api_key"]
@@ -26,10 +32,24 @@ class AWS(object):
 
     @classmethod
     def build_arn(cls, account_no, role_name):
+        """Return an ARN string.
+
+        Args:
+            account_no(str): AWS account number
+            role_name(str): Name of the role to be identified by ARN.
+
+        Returns:
+            str: ARN for ``role_name`` in ``account_no``
+        """
         arn = "arn:aws:iam::{account_no}:role/{role_name}".format(account_no=account_no, role_name=role_name)  # NOQA
         return arn
 
     def describe_all_ec2_instances(self):
+        """Get an inventory of all AWS EC2 instances for accessible accounts.
+
+        Returns:
+            dict: Inventory of AWS EC2 instances.
+        """
         inventory = {}
         for account in self.accounts:
             inventory.update(self.get_ec2_inventory_for_account(account))
@@ -37,15 +57,30 @@ class AWS(object):
         return inventory
 
     def get_ec2_inventory_for_account(self, account_no):
+        """Get EC2 inventory for numbered AWS account.
+
+        Args:
+            account_no(str): AWS account number
+
+        Returns:
+            dict: Inventory of AWS EC2 instances for ``account_no``.
+
+        """
         retval = {}
         arn = self.build_arn(account_no, self.role_name)
-        for region in self.ec2.regions:
-            retval.update(self.get_all_for_region_account(region, arn))
+        for region in self.ec2_regions:
+            retval.update(self.get_all_for_region(region, arn))
         return retval
 
     def get_ec2_inventory_for_api_keys_default(self):
-        """Does not specify role for account, gets instances for default
-        account attached to API keys.
+        """Get EC2 inventory for default account for key and secret.
+
+        This instance method uses the AWS API key and secret the object was
+        instantiated with to get an inventory of all instances across all
+        regions.
+
+        Returns:
+            dict: Inventory of AWS EC2 instances.
         """
         retval = {}
         for region in self.ec2_regions:
@@ -53,8 +88,20 @@ class AWS(object):
         return retval
 
     def get_all_for_region(self, region_name, arn=None):
-        """Handles pagination in the event there are more than 1000 instances
+        """Get all instances for a region.
+
+        Handles pagination in the event there are more than 1000 instances
         in a region.
+
+        Args:
+            region_name(str): Name of AWS region to inventory.
+            arn(str): Role ARN for enumerating instances across accounts.
+                Defaults to ``None``, which will use the default account
+                associated with the API keys this object was instantiated
+                with.
+
+        Return:
+            dict: Inventory of AWS EC2 instances.
         """
         retval = {}
         more_pages = True
@@ -65,9 +112,12 @@ class AWS(object):
                                            RoleSessionName="HaloFootprinter")
             temp_key = creds["Credentials"]["AccessKeyId"]
             temp_secret = creds["Credentials"]["SecretAccessKey"]
+            session_token = creds["Credentials"]["SessionToken"]
             client = boto3.client('ec2', aws_access_key_id=temp_key,
                                   aws_secret_access_key=temp_secret,
+                                  aws_session_token=session_token,
                                   region_name=region_name)
+            # print("Getting inventory for %s, creds: %s" % (arn, creds))
         else:
             client = boto3.client('ec2', aws_access_key_id=self.api_key,
                                   aws_secret_access_key=self.api_secret,
@@ -93,6 +143,23 @@ class AWS(object):
 
     @classmethod
     def instance_metadate_cleanse(cls, metadata, aws_account, aws_region):
+        """Clean and sanitize instance metadata for use.
+
+        If the EC2 instance was created without an SSH key, the ``key_name``
+        in the output of this classmethod will be represented like this:
+        ``NO KEY USED IN PROVISIONING``.
+
+        Args:
+            metadata(dict): Instance metadata returned from AWS SDK.
+            aws_account(str): Account number for AWS instance.
+            aws_region(str): Region containing the AWS instance.
+
+        Returns:
+            dict: Simple structure describing AWS EC2 instance.
+
+        """
+        if "KeyName" not in metadata:
+            metadata["KeyName"] = "NO KEY USED IN PROVISIONING"
         retval = {"vpc_id": metadata["VpcId"],
                   "aws_account": aws_account,
                   "key_name": metadata["KeyName"],
