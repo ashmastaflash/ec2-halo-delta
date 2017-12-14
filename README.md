@@ -140,7 +140,7 @@ docker run -it --rm \
     footprinter
 ```
 
-* CSV output, scanning multiple accounts, and saved to a file (notice that `AWS_ROLE_NAME` and `AWS_ACCOUNT_NUMBERS` are both set):
+* CSV output, scanning multiple accounts, and saved to a file.  CSV output is base64-encoded. Notice that `AWS_ROLE_NAME` and `AWS_ACCOUNT_NUMBERS` are both set):
 
 ```
 docker run -it --rm \
@@ -151,8 +151,7 @@ docker run -it --rm \
     -e AWS_ROLE_NAME=$AWS_ROLE_NAME \
     -e AWS_ACCOUNT_NUMBERS=$AWS_ACCOUNT_NUMBERS \
     -e OUTPUT_FORMAT=csv \
-    footprinter \
-    > ./aws_halo_footprint_delta.csv
+    footprinter | base64 --decode > ./aws_halo_footprint_delta.csv
 ```
 
 ## Implementation Notes

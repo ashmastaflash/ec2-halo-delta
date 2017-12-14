@@ -1,3 +1,4 @@
+import base64
 import csv
 import io
 from utility import Utility
@@ -15,7 +16,7 @@ class Report(object):
         csv_writer = csv.DictWriter(ephemeral_obj, fieldnames=fieldnames)
         csv_writer.writeheader()
         csv_writer.writerows(rows)
-        result = ephemeral_obj.getvalue()
+        result = base64.b64encode(ephemeral_obj.getvalue())
         ephemeral_obj.close()
         return result
 
