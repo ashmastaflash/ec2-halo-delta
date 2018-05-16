@@ -158,8 +158,10 @@ class AWS(object):
             dict: Simple structure describing AWS EC2 instance.
 
         """
-        if "KeyName" not in metadata:
-            metadata["KeyName"] = "NO KEY USED IN PROVISIONING"
+        for meta_key in [("KeyName", "NO KEY USED IN PROVISIONING"),
+                         ("VpcId", "NO VPC ID")]:
+            if meta_key[0] not in metadata:
+                metadata[meta_key[0]] = meta_key[1]
         retval = {"vpc_id": metadata["VpcId"],
                   "aws_account": aws_account,
                   "key_name": metadata["KeyName"],
