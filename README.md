@@ -1,5 +1,7 @@
 # EC2-Halo Footprint Delta Reporter
 
+[![Build Status](https://travis-ci.org/cloudpassage/ec2-halo-delta.svg?branch=master)](https://travis-ci.org/cloudpassage/ec2-halo-delta)
+
 Report on all EC2 instances which do not have a Halo agent installed.
 
 ## Requirements
