@@ -28,7 +28,7 @@ Optionally, set these environment variables, if your environment requires them:
 
 | Variable name            | Purpose                                                                |
 |--------------------------|------------------------------------------------------------------------|
-| `HALO_API_HOST`          | Hostname for Halo API.  Default: `api.cloudpassage.com`                |
+| `HALO_API_HOSTNAME`      | Hostname for Halo API.  Default: `api.cloudpassage.com`                |
 | `SLACK_ROUTING`          | Slack message routing rules.  See below...                             |
 | `SLACK_CHANNEL`          | Default channel for Slack notifications. If unset, defaults to `halo`. |
 | `SLACK_API_TOKEN`        | API token for Slack                                                    |
