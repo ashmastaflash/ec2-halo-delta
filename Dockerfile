@@ -16,6 +16,8 @@ RUN /usr/bin/python -mpy.test --cov=ehdlib --cov-report=term-missing /app/test -
 FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
+ENV HALO_API_HOSTNAME=api.cloudpassage.com
+
 RUN mkdir /app
 
 COPY app/ /app/

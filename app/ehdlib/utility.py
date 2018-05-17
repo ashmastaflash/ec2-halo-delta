@@ -50,8 +50,8 @@ class Utility(object):
         """Return a dict with Halo configuration information."""
         config = {"api_key": os.getenv("HALO_API_KEY"),
                   "api_secret": os.getenv("HALO_API_SECRET_KEY")}
-        if os.getenv("HALO_API_HOST"):
-            config["api_host"] = os.getenv("HALO_API_HOST")
+        if os.getenv("HALO_API_HOSTNAME"):
+            config["api_host"] = os.getenv("HALO_API_HOSTNAME")
         return config
 
     @classmethod
