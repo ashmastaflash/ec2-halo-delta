@@ -1,5 +1,7 @@
 # EC2-Halo Footprint Delta Reporter
 
+[![Build Status](https://travis-ci.org/cloudpassage/ec2-halo-delta.svg?branch=master)](https://travis-ci.org/cloudpassage/ec2-halo-delta)
+
 Report on all EC2 instances which do not have a Halo agent installed.
 
 ## Requirements
@@ -26,7 +28,7 @@ Optionally, set these environment variables, if your environment requires them:
 
 | Variable name            | Purpose                                                                |
 |--------------------------|------------------------------------------------------------------------|
-| `HALO_API_HOST`          | Hostname for Halo API.  Default: `api.cloudpassage.com`                |
+| `HALO_API_HOSTNAME`      | Hostname for Halo API.  Default: `api.cloudpassage.com`                |
 | `SLACK_ROUTING`          | Slack message routing rules.  See below...                             |
 | `SLACK_CHANNEL`          | Default channel for Slack notifications. If unset, defaults to `halo`. |
 | `SLACK_API_TOKEN`        | API token for Slack                                                    |

@@ -92,7 +92,7 @@ class TestUnitUtility():
     def test_get_halo_config_full(self, monkeypatch):
         monkeypatch.setenv("HALO_API_KEY", "HOWDY")
         monkeypatch.setenv("HALO_API_SECRET_KEY", "HIDY")
-        monkeypatch.setenv("HALO_API_HOST", "HODEHODEHODEHO")
+        monkeypatch.setenv("HALO_API_HOSTNAME", "HODEHODEHODEHO")
         halo_config = ehdlib.Utility.get_halo_config()
         assert "api_host" in halo_config
         assert len(halo_config.items()) == 3
